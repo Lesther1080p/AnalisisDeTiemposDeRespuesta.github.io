@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis Estadístico de Rendimiento v3</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+:root {
+            --color-bg: #000000; /* Fondo negro puro */
+            --color-surface: #121212; /* Un gris muy oscuro para las tarjetas/elementos principales, casi negro pero con una ligera distinción */
+            --color-surface-alt: #1E1E1E; /* Un gris oscuro un poco más claro para el contraste de filas, etc. */
+            --color-text-primary: #E0E0E0; /* Gris claro para el texto principal, excelente legibilidad */
+            --color-text-secondary: #B0B0B0; /* Gris medio para texto secundario */
+            --color-primary: #BB86FC; /* Un púrpura vibrante, moderno y distintivo (inspirado en Material Design Dark) */
+            --color-primary-dark: #9A5ECF; /* Versión más oscura del púrpura para hover/active */
+            --color-accent: #03DAC6; /* Un turquesa brillante como color de acento, que contrasta muy bien con el púrpura y el negro */ 
+            --color-border: #333333; /* Un gris oscuro para bordes, sutil en el fondo negro */
+            --color-success: #66BB6A; /* Verde suave para éxito */
+            --color-warning: #FFCA28; /* Amarillo ámbar suave para advertencias */
+            --color-danger: #EF5350; /* Rojo suave para peligro */
+            --font-main: 'Lato', sans-serif;
+            --font-data: 'Roboto Mono', monospace;
+            --border-radius-sharp: 4px;
+            
+            /* Sombra muy sutil, casi imperceptible pero que da profundidad */
+            --shadow-card: 0 4px 10px rgba(0, 0, 0, 0.5); 
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            
+            /* --- CAMBIO AQUÍ --- */
+            /* Se eliminaron las líneas 'background-image' y 'background-size' para quitar la cuadrícula */
+            background-color: var(--color-bg);
+        }
+        body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('Cwgf.gif') center center / cover no-repeat;
+    opacity: 1; /* controla la transparencia del gif */
+    filter: blur(2px); /* suaviza el movimiento */
+    z-index: -1; /* se coloca detrás de todo el contenido */
+}
+
+header {
+            background-color: var(--color-surface); 
+            color: var(--color-text-primary); 
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        h1 {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            color: var(--color-primary);
+            font-weight: 300;
+            margin: 5px 0 0 0;
+        }
+
+        main {
+            width: 90%;
+            max-width: 850px;
+            margin: 30px auto;
+            padding: 30px 35px;
+            background-color: var(--color-surface);
+            border-radius: var(--border-radius-sharp);
+            border: 1px solid var(--color-border);
+            box-shadow: var(--shadow-card); /* Sombra actualizada */
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid var(--color-primary);
+            padding-bottom: 8px;
+            margin-top: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .section-header svg {
+            margin-right: 12px;
+            
+             /* --- CAMBIO AQUÍ --- */
+            stroke: var(--color-accent); /* Iconos color naranja */
+        }
+
+        h2 {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: var(--color-primary-dark);
+            margin: 0;
+            padding: 0;
+            border-bottom: none;
+        }
+        
+        main h2:first-of-type {
+            margin-top: 0;
+        }
+        .section-header:first-of-type {
+            margin-top: 0;
+        }
+
+        p {
+            color: var(--color-text-secondary);
+            font-size: 1.05em;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            font-family: var(--font-data);
+            background-color: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-sharp);
+            color: var(--color-text-primary);
+            box-sizing: border-box;
+            resize: vertical;
+            transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 8px rgba(52, 152, 219, 0.3);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--color-surface);
+            background-color: var(--color-primary);
+            border: none;
+            border-radius: var(--border-radius-sharp);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        #resultados {
+            border: 1px solid var(--color-border);
+            border-left: 5px solid var(--color-primary);
+            border-radius: var(--border-radius-sharp);
+            padding: 10px 0;
+            margin-top: 25px;
+            overflow: hidden; 
+        }
+
+        #resultados p {
+            font-size: 1.1em;
+            font-weight: 400;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            align-items: center;
+            padding: 16px 25px;
+        }
+        
+        #resultados p:nth-child(odd) {
+            background-color: var(--color-surface-alt);
+        }
+        
+        #resultados p strong {
+             color: var(--color-text-primary);
+             font-weight: 700;
+        }
+
+        #resultados span {
+            font-family: var(--font-data);
+            font-weight: 700;
+            color: var(--color-accent);
+            text-align: right;
+        }
+        
+        .advertencia {
+            color: var(--color-danger) !important;
+            font-weight: bold;
+        }
+        .estable-muy {
+            color: var(--color-success) !important;
+        }
+        .estable {
+            color: var(--color-warning) !important;
+        }
+        .inestable {
+            color: var(--color-danger) !important;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: var(--color-text-secondary);
+            font-size: 0.9em;
+            background-color: var(--color-surface);
+            border-top: 1px solid var(--color-border);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Análisis Estadístico de Rendimiento</h1>
+        <p>Calculadora de Métricas de Variabilidad</p>
+    </header>
+
+    <main>
+        <div class="section-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            <h2>Área de Muestreo</h2>
+        </div>
+        
+        <p>Ingrese las mediciones (en ms), separadas por comas. El sistema requiere un mínimo de 2 muestras para calcular la varianza.</p>
+        
+        <textarea id="datosEntrada" rows="5" placeholder="Ej: 150.2, 162.5, 148.1, 155.0..."></textarea>
+        
+        <button id="btnCalcular">Calcular Métricas</button>
+
+        <div class="section-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
+            <h2>Resultados del Análisis</h2>
+        </div>
+
+<div id="resultados">
+        <p><strong>Total de Muestras (n):</strong> <span id="res-n">...</span></p>
+        <p><strong>Valor Esperado (Media, x̄):</strong> <span id="res-media">...</span></p>
+        <p><strong>Varianza Muestral (s²):</strong> <span id="res-varianza">...</span></p>
+        <p><strong>Desviación Estándar (s):</strong> <span id="res-desviacion">...</span></p>
+        <p><strong>Análisis de Estabilidad (CV):</strong> <span id="res-estabilidad">...</span></p>
+    </div>
+    </main>
+
+    <footer>
+        <p>Proyecto de Análisis de Sistemas - 2025</p>
+    </footer>
+
+    <script>
+        // El JavaScript no cambia, sigue siendo el mismo.
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('btnCalcular').addEventListener('click', function() {
+                realizarAnalisis();
+            });
+
+            function realizarAnalisis() {
+                const spanEstabilidad = document.getElementById('res-estabilidad');
+                spanEstabilidad.classList.remove('advertencia', 'estable-muy', 'estable', 'inestable');
+                const textoEntrada = document.getElementById('datosEntrada').value;
+                const mediciones = textoEntrada.split(',')
+                                                .map(s => parseFloat(s.trim()))
+                                                .filter(n => !isNaN(n));
+                if (mediciones.length === 0) {
+                    alert("Error: No se han ingresado datos válidos.");
+                    document.getElementById('res-n').textContent = '0';
+                    document.getElementById('res-media').textContent = '...';
+                    document.getElementById('res-varianza').textContent = '...';
+                    document.getElementById('res-desviacion').textContent = '...';
+                    spanEstabilidad.textContent = 'Error de entrada';
+                    spanEstabilidad.classList.add('advertencia');
+                    return;
+                }
+                const n = mediciones.length;
+                const suma = mediciones.reduce((acc, val) => acc + val, 0);
+                const media = suma / n;
+                if (n < 2) {
+                    document.getElementById('res-n').textContent = n;
+                    document.getElementById('res-media').textContent = `${media.toFixed(2)} ms`;
+                    document.getElementById('res-varianza').textContent = 'n/a';
+                    document.getElementById('res-desviacion').textContent = 'n/a';
+                    spanEstabilidad.textContent = 'n/a (n < 2)';
+                    spanEstabilidad.classList.add('advertencia');
+                    return; 
+                }
+                const sumaDiferenciasSq = mediciones.reduce((acc, val) => acc + Math.pow(val - media, 2), 0);
+                const varianza = sumaDiferenciasSq / (n - 1);
+                const desviacion = Math.sqrt(varianza);
+                const cv = (desviacion / media) * 100;
+                let analisisEstabilidad = '';
+                let estabilidadClase = '';
+                if (cv < 10) {
+                    analisisEstabilidad = `MUY ESTABLE (${cv.toFixed(2)}%)`;
+                    estabilidadClase = 'estable-muy';
+                } else if (cv < 25) {
+                    analisisEstabilidad = `ESTABLE (${cv.toFixed(2)}%)`;
+                    estabilidadClase = 'estable';
+                } else {
+                    analisisEstabilidad = `INESTABLE (${cv.toFixed(2)}%)`;
+                    estabilidadClase = 'inestable';
+                }
+                document.getElementById('res-n').textContent = n;
+                document.getElementById('res-media').textContent = `${media.toFixed(2)} ms`;
+                document.getElementById('res-varianza').textContent = `${varianza.toFixed(2)} ms²`;
+                document.getElementById('res-desviacion').textContent = `${desviacion.toFixed(2)} ms`;
+                spanEstabilidad.textContent = analisisEstabilidad;
+                spanEstabilidad.classList.add(estabilidadClase); 
+            }
+        });
+    </script>
+</body>
+</html>
