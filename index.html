@@ -3,29 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Análisis Estadístico de Rendimiento v3</title>
+    <title>Análisis Estadístico de Rendimiento v5</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <style>
-:root {
-            --color-bg: #000000; /* Fondo negro puro */
-            --color-surface: #121212; /* Un gris muy oscuro para las tarjetas/elementos principales, casi negro pero con una ligera distinción */
-            --color-surface-alt: #1E1E1E; /* Un gris oscuro un poco más claro para el contraste de filas, etc. */
-            --color-text-primary: #E0E0E0; /* Gris claro para el texto principal, excelente legibilidad */
-            --color-text-secondary: #B0B0B0; /* Gris medio para texto secundario */
-            --color-primary: #BB86FC; /* Un púrpura vibrante, moderno y distintivo (inspirado en Material Design Dark) */
-            --color-primary-dark: #9A5ECF; /* Versión más oscura del púrpura para hover/active */
-            --color-accent: #03DAC6; /* Un turquesa brillante como color de acento, que contrasta muy bien con el púrpura y el negro */ 
-            --color-border: #333333; /* Un gris oscuro para bordes, sutil en el fondo negro */
-            --color-success: #66BB6A; /* Verde suave para éxito */
-            --color-warning: #FFCA28; /* Amarillo ámbar suave para advertencias */
-            --color-danger: #EF5350; /* Rojo suave para peligro */
+        :root {
+            --color-bg: #000000;
+            --color-surface: #121212;
+            --color-surface-alt: #1E1E1E;
+            --color-text-primary: #E0E0E0;
+            --color-text-secondary: #B0B0B0;
+            --color-primary: #BB86FC;
+            --color-primary-dark: #9A5ECF;
+            --color-accent: #03DAC6; 
+            --color-border: #333333;
+            --color-success: #66BB6A;
+            --color-warning: #FFCA28;
+            --color-danger: #EF5350;
             --font-main: 'Lato', sans-serif;
             --font-data: 'Roboto Mono', monospace;
             --border-radius-sharp: 4px;
-            
-            /* Sombra muy sutil, casi imperceptible pero que da profundidad */
             --shadow-card: 0 4px 10px rgba(0, 0, 0, 0.5); 
         }
 
@@ -36,31 +36,31 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            
-            /* --- CAMBIO AQUÍ --- */
-            /* Se eliminaron las líneas 'background-image' y 'background-size' para quitar la cuadrícula */
             background-color: var(--color-bg);
         }
-        body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('Cwgf.gif') center center / cover no-repeat;
-    opacity: 1; /* controla la transparencia del gif */
-    filter: blur(2px); /* suaviza el movimiento */
-    z-index: -1; /* se coloca detrás de todo el contenido */
-}
 
-header {
+        /* Fondo de GIF (corregido) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://media.giphy.com/media/LwprM2mcK66nS/giphy.gif') center center / cover no-repeat;
+            opacity: 0.05;
+            filter: blur(2px);
+            z-index: -1;
+        }
+
+        header {
             background-color: var(--color-surface); 
             color: var(--color-text-primary); 
             padding: 25px 20px;
             text-align: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
+        
         h1 {
             font-size: 2.2em;
             font-weight: 700;
@@ -82,7 +82,7 @@ header {
             background-color: var(--color-surface);
             border-radius: var(--border-radius-sharp);
             border: 1px solid var(--color-border);
-            box-shadow: var(--shadow-card); /* Sombra actualizada */
+            box-shadow: var(--shadow-card);
         }
 
         .section-header {
@@ -96,9 +96,7 @@ header {
         
         .section-header svg {
             margin-right: 12px;
-            
-             /* --- CAMBIO AQUÍ --- */
-            stroke: var(--color-accent); /* Iconos color naranja */
+            stroke: var(--color-accent);
         }
 
         h2 {
@@ -163,6 +161,42 @@ header {
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
+        /* Contenedor para los 3 gráficos */
+        .charts-wrapper {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap; 
+            margin: 20px 0 30px 0;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 10px;
+        }
+
+        .score-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: var(--font-data);
+            font-size: 3.5em; 
+            font-weight: 700;
+            color: var(--color-text-secondary);
+            transition: color 0.3s ease;
+        }
+        
+        .chart-label {
+            font-family: var(--font-main);
+            color: var(--color-text-primary);
+            font-size: 1em;
+            font-weight: 700;
+            text-align: center;
+            margin-top: -15px;
+        }
+
         #resultados {
             border: 1px solid var(--color-border);
             border-left: 5px solid var(--color-primary);
@@ -197,6 +231,37 @@ header {
             color: var(--color-accent);
             text-align: right;
         }
+        
+        /* --- ### NUEVOS ESTILOS PARA EL INFORME ### --- */
+        #informe-tecnico {
+            background-color: var(--color-surface-alt);
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-sharp);
+            padding: 20px 25px;
+            margin-top: 25px;
+            border-left: 5px solid var(--color-accent);
+        }
+        
+        #informe-tecnico p {
+            font-size: 1.05em;
+            line-height: 1.7;
+            color: var(--color-text-secondary);
+            margin-bottom: 15px;
+        }
+        
+        #informe-tecnico strong {
+            color: var(--color-text-primary);
+            font-weight: 700;
+        }
+        
+        /* Título especial para el informe */
+        .informe-titulo { 
+             font-size: 1.2em;
+             font-weight: 700;
+             color: var(--color-primary);
+             margin-bottom: 10px;
+        }
+        /* --- FIN DE NUEVOS ESTILOS --- */
         
         .advertencia {
             color: var(--color-danger) !important;
@@ -244,16 +309,44 @@ header {
 
         <div class="section-header">
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg>
-            <h2>Resultados del Análisis</h2>
+            <h2>Diagnóstico Visual</h2>
         </div>
 
-<div id="resultados">
-        <p><strong>Total de Muestras (n):</strong> <span id="res-n">...</span></p>
-        <p><strong>Valor Esperado (Media, x̄):</strong> <span id="res-media">...</span></p>
-        <p><strong>Varianza Muestral (s²):</strong> <span id="res-varianza">...</span></p>
-        <p><strong>Desviación Estándar (s):</strong> <span id="res-desviacion">...</span></p>
-        <p><strong>Análisis de Estabilidad (CV):</strong> <span id="res-estabilidad">...</span></p>
-    </div>
+        <div class="charts-wrapper">
+            <div class="chart-container">
+                <canvas id="stabilityChart"></canvas>
+                <div id="stabilityScoreText" class="score-text">...</div>
+                <p class="chart-label">Estabilidad (CV)</p>
+            </div>
+            <div class="chart-container">
+                <canvas id="speedChart"></canvas>
+                <div id="speedScoreText" class="score-text">...</div>
+                <p class="chart-label">Velocidad (Media)</p>
+            </div>
+            <div class="chart-container">
+                <canvas id="reliabilityChart"></canvas>
+                <div id="reliabilityScoreText" class="score-text">...</div>
+                <p class="chart-label">Fiabilidad (Outliers)</p>
+            </div>
+        </div>
+
+        <div id="resultados">
+            <p><strong>Total de Muestras (n):</strong> <span id="res-n">...</span></p>
+            <p><strong>Valor Esperado (Media, x̄):</strong> <span id="res-media">...</span></p>
+            <p><strong>Varianza Muestral (s²):</strong> <span id="res-varianza">...</span></p>
+            <p><strong>Desviación Estándar (s):</strong> <span id="res-desviacion">...</span></p>
+            <p><strong>Análisis de Estabilidad (CV):</strong> <span id="res-estabilidad">...</span></p>
+        </div>
+        
+        <div class="section-header">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            <h2>Informe Técnico (Autogenerado)</h2>
+        </div>
+        
+        <div id="informe-tecnico">
+            <p>Presione "Calcular Métricas" para generar el informe...</p>
+        </div>
+        
     </main>
 
     <footer>
@@ -261,45 +354,152 @@ header {
     </footer>
 
     <script>
-        // El JavaScript no cambia, sigue siendo el mismo.
         document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('btnCalcular').addEventListener('click', function() {
-                realizarAnalisis();
-            });
+            
+            // --- 1. Variables globales para los gráficos y textos ---
+            let myStabilityChart, mySpeedChart, myReliabilityChart;
+            const ctxStability = document.getElementById('stabilityChart').getContext('2d');
+            const ctxSpeed = document.getElementById('speedChart').getContext('2d');
+            const ctxReliability = document.getElementById('reliabilityChart').getContext('2d');
+            
+            const stabilityScoreText = document.getElementById('stabilityScoreText');
+            const speedScoreText = document.getElementById('speedScoreText');
+            const reliabilityScoreText = document.getElementById('reliabilityScoreText');
 
+            // --- 2. Función GENÉRICA para crear/actualizar un gráfico ---
+            function createOrUpdateChart(chartInstance, canvasCtx, score, textElement, customText = null) {
+                const scoreColor = (score >= 90 ? 'var(--color-success)' : (score >= 50 ? 'var(--color-warning)' : 'var(--color-danger)'));
+                
+                const data = {
+                    datasets: [{
+                        data: [score, 100 - score], 
+                        backgroundColor: [ scoreColor, 'var(--color-border)' ],
+                        borderColor: 'var(--color-surface)',
+                        borderWidth: 5,
+                        cutout: '80%', 
+                        borderRadius: 5,
+                    }]
+                };
+
+                const options = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 1000, easing: 'easeOutQuart' },
+                    plugins: { tooltip: { enabled: false } }
+                };
+
+                textElement.textContent = customText ? customText : score.toFixed(0);
+                textElement.style.color = scoreColor;
+
+                if (chartInstance) {
+                    chartInstance.data.datasets[0].data = [score, 100 - score];
+                    chartInstance.data.datasets[0].backgroundColor[0] = scoreColor;
+                    chartInstance.update();
+                    return chartInstance;
+                } else {
+                    return new Chart(canvasCtx, {
+                        type: 'doughnut',
+                        data: data,
+                        options: options
+                    });
+                }
+            }
+            
+            // --- ### NUEVA FUNCIÓN ### ---
+            // --- 3. Función para generar el texto del informe ---
+            function generarInformeTexto(n, media, cv, analisisEstabilidad, velocidadScore, fiabilidadScore, estabilidadScore) {
+                
+                // Función interna para calificar el puntaje
+                const interpretarScore = (score) => {
+                    if (score >= 90) return "Excelente";
+                    if (score >= 80) return "Bueno";
+                    if (score >= 60) return "Regular";
+                    if (score >= 50) return "Deficiente";
+                    return "Muy Deficiente";
+                };
+
+                // Construir el informe con HTML
+                let informe = `<p class="informe-titulo">Resumen Ejecutivo de Rendimiento</p>`;
+                informe += `<p>Basado en un análisis de <strong>${n} muestras</strong>, el sistema demuestra un rendimiento general con las siguientes características clave:</p>`;
+                
+                informe += `<p><strong>1. Velocidad (Media):</strong> El tiempo de respuesta promedio fue de <strong>${media.toFixed(2)} ms</strong>. Esto resulta en un puntaje de velocidad de <strong>${velocidadScore.toFixed(0)}/100</strong> (Calificación: ${interpretarScore(velocidadScore)}).</p>`;
+                
+                informe += `<p><strong>2. Estabilidad (Consistencia):</strong> El Coeficiente de Variación (CV) es de <strong>${cv.toFixed(2)}%</strong>. Esto indica que el sistema es <strong>${analisisEstabilidad.split('(')[0].trim()}</strong> y otorga un puntaje de estabilidad de <strong>${estabilidadScore.toFixed(0)}/100</strong>.</p>`;
+                
+                informe += `<p><strong>3. Fiabilidad (Outliers):</strong> El sistema presenta un puntaje de fiabilidad de <strong>${fiabilidadScore.toFixed(0)}/100</strong>. Una calificación de <strong>"${interpretarScore(fiabilidadScore)}"</strong> sugiere que el sistema tiene ${fiabilidadScore >= 80 ? 'muy pocos o ningún pico de latencia extrema' : 'picos de latencia notables que afectan la previsibilidad'}.</p>`;
+
+                // Conclusión general basada en los puntajes
+                if (estabilidadScore > 75 && velocidadScore > 75 && fiabilidadScore > 75) {
+                     informe += `<p><strong>Conclusión:</strong> El sistema es <strong>robusto, rápido y fiable</strong>. El rendimiento es excelente y consistente, sin áreas críticas de preocupación.</p>`;
+                } else {
+                     informe += `<p><strong>Conclusión:</strong> El sistema muestra <strong>áreas de mejora</strong>. ${velocidadScore <= 75 ? 'Se debe priorizar la optimización de la <strong>velocidad promedio</strong>. ' : ''} ${estabilidadScore <= 75 ? 'Se debe investigar la causa de la <strong>alta variabilidad</strong> en los tiempos de respuesta. ' : ''} ${fiabilidadScore <= 75 ? 'Se debe analizar la causa de los <strong>picos de latencia (outliers)</strong>.' : ''}</p>`;
+                }
+                
+                return informe;
+            }
+
+            // --- 4. Función de análisis principal (actualizada) ---
             function realizarAnalisis() {
                 const spanEstabilidad = document.getElementById('res-estabilidad');
+                const informeDiv = document.getElementById('informe-tecnico');
                 spanEstabilidad.classList.remove('advertencia', 'estable-muy', 'estable', 'inestable');
+                
                 const textoEntrada = document.getElementById('datosEntrada').value;
                 const mediciones = textoEntrada.split(',')
-                                                .map(s => parseFloat(s.trim()))
-                                                .filter(n => !isNaN(n));
+                                             .map(s => parseFloat(s.trim()))
+                                             .filter(n => !isNaN(n));
+
                 if (mediciones.length === 0) {
                     alert("Error: No se han ingresado datos válidos.");
+                    myStabilityChart = createOrUpdateChart(myStabilityChart, ctxStability, 0, stabilityScoreText, "Err");
+                    mySpeedChart = createOrUpdateChart(mySpeedChart, ctxSpeed, 0, speedScoreText, "Err");
+                    myReliabilityChart = createOrUpdateChart(myReliabilityChart, ctxReliability, 0, reliabilityScoreText, "Err");
+                    
                     document.getElementById('res-n').textContent = '0';
                     document.getElementById('res-media').textContent = '...';
                     document.getElementById('res-varianza').textContent = '...';
                     document.getElementById('res-desviacion').textContent = '...';
                     spanEstabilidad.textContent = 'Error de entrada';
                     spanEstabilidad.classList.add('advertencia');
+                    informeDiv.innerHTML = '<p class="advertencia">Error: No hay datos. El informe no puede ser generado.</p>';
                     return;
                 }
+
                 const n = mediciones.length;
                 const suma = mediciones.reduce((acc, val) => acc + val, 0);
                 const media = suma / n;
+
                 if (n < 2) {
+                    myStabilityChart = createOrUpdateChart(myStabilityChart, ctxStability, 0, stabilityScoreText, "n/a");
+                    mySpeedChart = createOrUpdateChart(mySpeedChart, ctxSpeed, 0, speedScoreText, "n/a");
+                    myReliabilityChart = createOrUpdateChart(myReliabilityChart, ctxReliability, 0, reliabilityScoreText, "n/a");
+
                     document.getElementById('res-n').textContent = n;
                     document.getElementById('res-media').textContent = `${media.toFixed(2)} ms`;
                     document.getElementById('res-varianza').textContent = 'n/a';
                     document.getElementById('res-desviacion').textContent = 'n/a';
                     spanEstabilidad.textContent = 'n/a (n < 2)';
                     spanEstabilidad.classList.add('advertencia');
+                    informeDiv.innerHTML = '<p class="advertencia">Datos insuficientes para generar un informe.</p>';
                     return; 
                 }
+
                 const sumaDiferenciasSq = mediciones.reduce((acc, val) => acc + Math.pow(val - media, 2), 0);
                 const varianza = sumaDiferenciasSq / (n - 1);
                 const desviacion = Math.sqrt(varianza);
                 const cv = (desviacion / media) * 100;
+                
+                let estabilidadScore = Math.max(0, 100 - (cv * 2));
+                let velocidadScore = Math.max(0, Math.min(100, 100 - (media - 150) / 18.5));
+                const outlierThreshold = media + (3 * desviacion);
+                const outliers = mediciones.filter(m => m > outlierThreshold);
+                const porcentajeOutliers = (outliers.length / n) * 100;
+                let fiabilidadScore = Math.max(0, 100 - (porcentajeOutliers * 5));
+
+                myStabilityChart = createOrUpdateChart(myStabilityChart, ctxStability, estabilidadScore, stabilityScoreText);
+                mySpeedChart = createOrUpdateChart(mySpeedChart, ctxSpeed, velocidadScore, speedScoreText);
+                myReliabilityChart = createOrUpdateChart(myReliabilityChart, ctxReliability, fiabilidadScore, reliabilityScoreText);
+
                 let analisisEstabilidad = '';
                 let estabilidadClase = '';
                 if (cv < 10) {
@@ -307,18 +507,42 @@ header {
                     estabilidadClase = 'estable-muy';
                 } else if (cv < 25) {
                     analisisEstabilidad = `ESTABLE (${cv.toFixed(2)}%)`;
-                    estabilidadClase = 'estable';
+                    estabilidadClase = 'inestable';
                 } else {
                     analisisEstabilidad = `INESTABLE (${cv.toFixed(2)}%)`;
                     estabilidadClase = 'inestable';
                 }
+
                 document.getElementById('res-n').textContent = n;
                 document.getElementById('res-media').textContent = `${media.toFixed(2)} ms`;
                 document.getElementById('res-varianza').textContent = `${varianza.toFixed(2)} ms²`;
                 document.getElementById('res-desviacion').textContent = `${desviacion.toFixed(2)} ms`;
                 spanEstabilidad.textContent = analisisEstabilidad;
-                spanEstabilidad.classList.add(estabilidadClase); 
+                spanEstabilidad.classList.add(estabilidadClase);
+
+                // --- ### ACTUALIZAR EL INFORME ### ---
+                // Llama a la nueva función para generar el texto y lo inserta en el div
+                informeDiv.innerHTML = generarInformeTexto(
+                    n, 
+                    media, 
+                    cv, 
+                    analisisEstabilidad, 
+                    velocidadScore, 
+                    fiabilidadScore, 
+                    estabilidadScore
+                );
             }
+            
+            // --- 5. Inicializar la página ---
+            const informeDiv = document.getElementById('informe-tecnico');
+            
+            myStabilityChart = createOrUpdateChart(myStabilityChart, ctxStability, 0, stabilityScoreText, "...");
+            mySpeedChart = createOrUpdateChart(mySpeedChart, ctxSpeed, 0, speedScoreText, "...");
+            myReliabilityChart = createOrUpdateChart(myReliabilityChart, ctxReliability, 0, reliabilityScoreText, "...");
+            
+            informeDiv.innerHTML = '<p>Presione "Calcular Métricas" para generar el informe...</p>';
+
+            document.getElementById('btnCalcular').addEventListener('click', realizarAnalisis);
         });
     </script>
 </body>
